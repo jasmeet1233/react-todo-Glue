@@ -1,80 +1,58 @@
-import { useState, useRef, useEffect } from 'react'
-
-const getLocalStorage = () => {
-  const list = localStorage.getItem("todoList");
-  if (list) {
-    return JSON.parse(list);
-  } else {
-    return [];
-  }
-};
+import { useState, useMemo } from "react";
 
 function App() {
-  const [inputText, setInputText] = useState('')
-  const [todo, setTodo] = useState(getLocalStorage())
-  const localDataRef = useRef([])
-
-  const saveData = (list) => {
-    localDataRef.current = list
-  }
-
-    useEffect(() => {
-      localStorage.setItem("todoList", JSON.stringify(todo));
-    }, [localDataRef.current]);
+  const [inputText, setInputText] = useState("");
+  const [todo, setTodo] = useState([]);
+  const [filter, setFilter] = useState("all");
 
   const addHandler = (e) => {
     e.preventDefault();
-    if(inputText){
+    if (inputText) {
       const todoObj = {
         todo: inputText,
         id: new Date().getTime().toString(),
-        status: 'incomplete'
+        status: "incomplete",
       };
-      saveData([...todo, todoObj])
       setTodo([...todo, todoObj]);
-      setInputText('');
-      
+      setInputText("");
     }
-  }
+  };
 
   const deleteTodo = (id) => {
     const updatedArr = todo.filter((item) => item.id !== id);
     setTodo(updatedArr);
-    saveData(deleteTodo)
-  }
+  };
 
-  const filterShow = (filter) => {
-    if(filter === 'all'){
-      setTodo(getLocalStorage())
-    } else if(filter === 'active') {
-      const todoList = getLocalStorage()
-      const updatedArr = todoList.filter((item) => item.status === 'incomplete');
-      setTodo(updatedArr)
-    } else if(filter === 'completed') {
-      const todoList = getLocalStorage();
-      const updatedArr = todoList.filter((item) => item.status === "complete");
-      setTodo(updatedArr);
+  const items = useMemo(() => {
+    if (filter === "all") {
+      return todo;
+    } else if (filter === "active") {
+      const updatedArr = todo.filter((item) => item.status === "incomplete");
+      return updatedArr;
+    } else if (filter === "completed") {
+      const updatedArr = todo.filter((item) => item.status === "complete");
+      return updatedArr;
     }
-  }
+    return todo;
+  }, [filter, todo]);
 
   const toggleStatus = (id) => {
     const updatedArr = todo.map((item) => {
-      if(item.id === id){
-        return (item.status === 'complete' ? {...item, status : 'incomplete'} : {...item, status : 'complete'} )
+      if (item.id === id) {
+        return item.status === "complete"
+          ? { ...item, status: "incomplete" }
+          : { ...item, status: "complete" };
       } else {
-        return {...item}
+        return { ...item };
       }
-    })
-    saveData(updatedArr)
-    setTodo(updatedArr)
-  }
+    });
+    setTodo(updatedArr);
+  };
 
   const deleteCompleted = () => {
-    const todoList = getLocalStorage()
-    const updatedArr = todoList.filter((item) => item.status === 'incomplete');
-    saveData(updatedArr)
+    const updatedArr = todo.filter((item) => item.status === "incomplete");
     setTodo(updatedArr);
-  }
+  };
 
   return (
     <div className="App">
@@ -86,11 +64,13 @@ function App() {
         />
       </form>
       <div>
-        {todo.map((item) => {
+        {items.map((item) => {
           const { id, todo, status } = item;
           return (
-            <div className="todo-item">
-              <button onClick = {() => toggleStatus(id)}>{status === 'complete' ? 'C' : 'NC'}</button>
+            <div className="todo-item" key={id}>
+              <button onClick={() => toggleStatus(id)}>
+                {status === "complete" ? "C" : "NC"}
+              </button>
               <p>{todo}</p>
               <button onClick={() => deleteTodo(id)}>X</button>
             </div>
@@ -98,13 +78,13 @@ function App() {
         })}
       </div>
       <div>
-        <button onClick={() => filterShow("all")}>All</button>
-        <button onClick={() => filterShow("active")}>Active</button>
-        <button onClick={() => filterShow("completed")}>Completed</button>
-        <button onClick = {deleteCompleted}>Clear Completed</button>
+        <button onClick={() => setFilter("all")}>All</button>
+        <button onClick={() => setFilter("active")}>Active</button>
+        <button onClick={() => setFilter("completed")}>Completed</button>
+        <button onClick={deleteCompleted}>Clear Completed</button>
       </div>
     </div>
   );
 }
 
-export default App
+export default App;
