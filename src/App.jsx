@@ -56,32 +56,51 @@ function App() {
 
   return (
     <div className="App">
-      <form onSubmit={addHandler}>
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-        />
-      </form>
-      <div>
-        {items.map((item) => {
-          const { id, todo, status } = item;
-          return (
-            <div className="todo-item" key={id}>
-              <button onClick={() => toggleStatus(id)}>
-                {status === "complete" ? "C" : "NC"}
-              </button>
-              <p>{todo}</p>
-              <button onClick={() => deleteTodo(id)}>X</button>
-            </div>
-          );
-        })}
-      </div>
-      <div>
-        <button onClick={() => setFilter("all")}>All</button>
-        <button onClick={() => setFilter("active")}>Active</button>
-        <button onClick={() => setFilter("completed")}>Completed</button>
-        <button onClick={deleteCompleted}>Clear Completed</button>
+      <h1 className="todos-heading">todos</h1>
+      <div className="todo-container">
+        <form onSubmit={addHandler}>
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="what needs to be done?"
+            className="todo-input"
+          />
+        </form>
+        <div className="todo-item-container">
+          {items.map((item) => {
+            const { id, todo, status } = item;
+            return (
+              <div className="todo-item" key={id} >
+                <input type="checkbox" onClick={() => toggleStatus(id)} />
+                <p className = {status === "complete" ? 'faded' : ''}>{todo}</p>
+                <span onClick={() => deleteTodo(id)} className="delete-button">
+                  x
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <div className = 'footer'>
+          <button onClick={() => setFilter("all")} className="footer-buttons">
+            All
+          </button>
+          <button
+            onClick={() => setFilter("active")}
+            className="footer-buttons"
+          >
+            Active
+          </button>
+          <button
+            onClick={() => setFilter("completed")}
+            className="footer-buttons"
+          >
+            Completed
+          </button>
+          <button onClick={deleteCompleted} className="footer-buttons">
+            Clear Completed
+          </button>
+        </div>
       </div>
     </div>
   );
