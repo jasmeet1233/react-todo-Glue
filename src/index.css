@@ -62,13 +62,16 @@ body {
 }
 
 
-
 .delete-button {
     position: absolute;
     right: 10px;
     font-size: 18px;
     color: red;
     cursor: pointer;
+}
+
+.hideBtn {
+    display: none;
 }
 
 .footer{

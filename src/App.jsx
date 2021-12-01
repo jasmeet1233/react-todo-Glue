@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import TodoItem from "./TodoItem";
 
 function App() {
   const [inputText, setInputText] = useState("");
@@ -70,37 +71,31 @@ function App() {
         <div className="todo-item-container">
           {items.map((item) => {
             const { id, todo, status } = item;
-            return (
-              <div className="todo-item" key={id} >
-                <input type="checkbox" onClick={() => toggleStatus(id)} />
-                <p className = {status === "complete" ? 'faded' : ''}>{todo}</p>
-                <span onClick={() => deleteTodo(id)} className="delete-button">
-                  x
-                </span>
-              </div>
-            );
+            return <TodoItem {...item} toggleStatus={toggleStatus} deleteTodo = {deleteTodo} key={id} />;
           })}
         </div>
-        <div className = 'footer'>
-          <button onClick={() => setFilter("all")} className="footer-buttons">
-            All
-          </button>
-          <button
-            onClick={() => setFilter("active")}
-            className="footer-buttons"
-          >
-            Active
-          </button>
-          <button
-            onClick={() => setFilter("completed")}
-            className="footer-buttons"
-          >
-            Completed
-          </button>
-          <button onClick={deleteCompleted} className="footer-buttons">
-            Clear Completed
-          </button>
-        </div>
+        {todo.length !== 0 && (
+          <div className="footer">
+            <button onClick={() => setFilter("all")} className="footer-buttons">
+              All
+            </button>
+            <button
+              onClick={() => setFilter("active")}
+              className="footer-buttons"
+            >
+              Active
+            </button>
+            <button
+              onClick={() => setFilter("completed")}
+              className="footer-buttons"
+            >
+              Completed
+            </button>
+            <button onClick={deleteCompleted} className="footer-buttons">
+              Clear Completed
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
