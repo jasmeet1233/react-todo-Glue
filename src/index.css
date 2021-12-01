@@ -61,6 +61,21 @@ body {
     margin-right: .7rem;
 }
 
+.check-box {
+    border: 0.1px solid grey;
+    border-radius: 50%;
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-right: 10px;
+}
+
+.check {
+    visibility: hidden;
+}
+
+.show-check {
+    visibility: visible;
+}
 
 .delete-button {
     position: absolute;

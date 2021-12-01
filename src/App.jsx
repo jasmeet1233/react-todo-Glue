@@ -71,7 +71,14 @@ function App() {
         <div className="todo-item-container">
           {items.map((item) => {
             const { id, todo, status } = item;
-            return <TodoItem {...item} toggleStatus={toggleStatus} deleteTodo = {deleteTodo} key={id} />;
+            return (
+              <TodoItem
+                {...item}
+                toggleStatus={toggleStatus}
+                deleteTodo={deleteTodo}
+                key={id}
+              />
+            );
           })}
         </div>
         {todo.length !== 0 && (
