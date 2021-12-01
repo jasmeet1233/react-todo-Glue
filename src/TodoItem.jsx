@@ -2,12 +2,10 @@ import React, { useState, useRef } from "react";
 
 const TodoItem = ({ status, id, todo, deleteTodo, toggleStatus }) => {
   const [hover, setHover] = useState(false);
-  const itemRef = useRef();
 
   return (
     <div
       className="todo-item"
-      ref={itemRef}
       onMouseOver={() => setHover(true)}
       onMouseOut={() => setHover(false)}
     >
