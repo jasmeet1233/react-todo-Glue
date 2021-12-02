@@ -32,7 +32,7 @@ function App() {
       const updatedArr = todo.filter((item) => item.status === "incomplete");
       return updatedArr;
     } else if (filter === "completed") {
-      const updatedArr = todo.filter((item) => item.status === "complete");
+      const updatedArr = todo.filter((item) => item.status === 'complete');
       return updatedArr;
     }
     return todo;
@@ -57,18 +57,18 @@ function App() {
   };
 
   const toggleStatusAll = () => {
-    if (isAllComplete) {
+    if (!isAllComplete) {
       const updatedArr = todo.map((item) => {
         return { ...item, status: "incomplete" };
       });
-      setIsAllComplete(!isAllComplete)
       setTodo(updatedArr);
+      setIsAllComplete(!isAllComplete);
     } else {
       const updatedArr = todo.map((item) => {
         return { ...item, status: "complete" };
       });
-      setIsAllComplete(!isAllComplete);
       setTodo(updatedArr);
+      setIsAllComplete(!isAllComplete);
     }
   };
 
