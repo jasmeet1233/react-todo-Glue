@@ -5,6 +5,7 @@ function App() {
   const [inputText, setInputText] = useState("");
   const [todo, setTodo] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [isAllComplete, setIsAllComplete] = useState("false");
 
   const addHandler = (e) => {
     e.preventDefault();
@@ -55,10 +56,29 @@ function App() {
     setTodo(updatedArr);
   };
 
+  const toggleStatusAll = () => {
+    if (isAllComplete) {
+      const updatedArr = todo.map((item) => {
+        return { ...item, status: "incomplete" };
+      });
+      setIsAllComplete(!isAllComplete)
+      setTodo(updatedArr);
+    } else {
+      const updatedArr = todo.map((item) => {
+        return { ...item, status: "complete" };
+      });
+      setIsAllComplete(!isAllComplete);
+      setTodo(updatedArr);
+    }
+  };
+
   return (
     <div className="App">
       <h1 className="todos-heading">todos</h1>
       <div className="todo-container">
+        <button className="complete-all" onClick={toggleStatusAll}>
+          v
+        </button>
         <form onSubmit={addHandler}>
           <input
             type="text"
@@ -83,18 +103,29 @@ function App() {
         </div>
         {todo.length !== 0 && (
           <div className="footer">
-            <button onClick={() => setFilter("all")} className="footer-buttons">
+            <button
+              onClick={() => setFilter("all")}
+              className={
+                filter === "all" ? "footer-buttons active" : "footer-buttons"
+              }
+            >
               All
             </button>
             <button
               onClick={() => setFilter("active")}
-              className="footer-buttons"
+              className={
+                filter === "active" ? "footer-buttons active" : "footer-buttons"
+              }
             >
               Active
             </button>
             <button
               onClick={() => setFilter("completed")}
-              className="footer-buttons"
+              className={
+                filter === "completed"
+                  ? "footer-buttons active"
+                  : "footer-buttons"
+              }
             >
               Completed
             </button>
