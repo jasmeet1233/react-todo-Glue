@@ -1,11 +1,22 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import TodoItem from "./TodoItem";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchData, addTodo, deleteData } from "./store/todosReducer";
+import { deleteAllCompleted } from "./store/todosReducer";
 
 function App() {
   const [inputText, setInputText] = useState("");
-  const [todo, setTodo] = useState([]);
   const [filter, setFilter] = useState("all");
   const [isAllComplete, setIsAllComplete] = useState("false");
+  const [isCompletedExists, setIsCompletedExists] = useState("false");
+
+  const { todo } = useSelector((state) => state.todos);
+  const dispatch = useDispatch();
+  console.log('render')
+
+  useEffect(async () => {
+    dispatch(fetchData());
+  }, []);
 
   const addHandler = (e) => {
     e.preventDefault();
@@ -15,46 +26,33 @@ function App() {
         id: new Date().getTime().toString(),
         status: "incomplete",
       };
-      setTodo([...todo, todoObj]);
+      dispatch(addTodo(todoObj));
       setInputText("");
     }
   };
 
-  const deleteTodo = (id) => {
-    const updatedArr = todo.filter((item) => item.id !== id);
-    setTodo(updatedArr);
-  };
-
   const items = useMemo(() => {
+    const updatedArr = todo.filter((item) => item.status === "complete");
+    if (updatedArr.length >= 1) {
+      setIsCompletedExists(true);
+    } else {
+      setIsCompletedExists(false)
+    }
     if (filter === "all") {
       return todo;
     } else if (filter === "active") {
       const updatedArr = todo.filter((item) => item.status === "incomplete");
       return updatedArr;
     } else if (filter === "completed") {
-      const updatedArr = todo.filter((item) => item.status === 'complete');
+      const updatedArr = todo.filter((item) => item.status === "complete");
       return updatedArr;
     }
-    return todo;
   }, [filter, todo]);
 
-  const toggleStatus = (id) => {
-    const updatedArr = todo.map((item) => {
-      if (item.id === id) {
-        return item.status === "complete"
-          ? { ...item, status: "incomplete" }
-          : { ...item, status: "complete" };
-      } else {
-        return { ...item };
-      }
-    });
-    setTodo(updatedArr);
-  };
-
-  const deleteCompleted = () => {
-    const updatedArr = todo.filter((item) => item.status === "incomplete");
-    setTodo(updatedArr);
-  };
+  // const deleteCompleted = () => {
+  //   const updatedArr = todo.filter((item) => item.status === "incomplete");
+  //   setTodo(updatedArr);
+  // };
 
   const toggleStatusAll = () => {
     if (!isAllComplete) {
@@ -91,14 +89,7 @@ function App() {
         <div className="todo-item-container">
           {items.map((item) => {
             const { id, todo, status } = item;
-            return (
-              <TodoItem
-                {...item}
-                toggleStatus={toggleStatus}
-                deleteTodo={deleteTodo}
-                key={id}
-              />
-            );
+            return <TodoItem {...item} key={id} />;
           })}
         </div>
         {todo.length !== 0 && (
@@ -129,9 +120,11 @@ function App() {
             >
               Completed
             </button>
-            <button onClick={deleteCompleted} className="footer-buttons">
-              Clear Completed
-            </button>
+            {isCompletedExists === true && (
+              <button onClick={() => dispatch(deleteAllCompleted())} className="footer-buttons clear">
+                Clear Completed
+              </button>
+            )}
           </div>
         )}
       </div>
